@@ -19,7 +19,8 @@
 	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 		<TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Upload Video Page" VerticalAlignment="Top"/>
 		<TextBlock Name="NotLoggedInText" HorizontalAlignment="Left" Margin="0,20,0,0" TextWrapping="Wrap" Text="You Are Not Logged In" VerticalAlignment="Top" Visibility="{Binding IsLoggedIn, Converter={StaticResource bool2visInverse}}" />
-		<Button Name="LoginButton" HorizontalAlignment="Left" Margin="175,20,0,0" Padding="5,0,5,0" VerticalAlignment="Top" Content="Log In" Visibility="{Binding IsLoggedIn, Converter={StaticResource bool2visInverse}}" />
+		<Button Name="LoginButton" HorizontalAlignment="Left" Margin="175,20,0,0" Padding="5,0,5,0" VerticalAlignment="Top" Content="Log In" Visibility="{Binding IsLoggedIn, Converter={StaticResource bool2visInverse}}"  Click="Button_Click" />
 		<TextBlock Name="LoggedInText" Text="You Are Logged In" Margin="0,20,0,0" Visibility="{Binding IsLoggedIn, Converter={StaticResource bool2vis}}"></TextBlock>
+		<Button Name="LogoutButton" HorizontalAlignment="Left" Margin="175,20,0,0" Padding="5,0,5,0" VerticalAlignment="Top" Content="Log Out" Visibility="{Binding IsLoggedIn, Converter={StaticResource bool2vis}}"  Click="Logout_Button_Click" />
 	</Grid>
 </Page>

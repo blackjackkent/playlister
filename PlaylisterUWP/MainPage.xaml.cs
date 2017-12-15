@@ -22,6 +22,7 @@ using System.Diagnostics;
 
 namespace PlaylisterUWP
 {
+	using System.Threading.Tasks;
 	using Windows.Foundation;
 	using Windows.UI.ViewManagement;
 	using Infrastructure;
@@ -55,9 +56,10 @@ namespace PlaylisterUWP
 		/// <param name="e"></param>
 		protected override async void OnNavigatedTo(NavigationEventArgs e)
 		{
-			var uri = e.Parameter as Uri;
+			  var uri = e.Parameter as Uri;
 			if (uri != null)
 			{
+				PivotContainer.SelectedItem = UploadVideoPageContainer;
 				var authResponse = AuthService.ParseAuthorizationResponse(uri, _log);
 				var localSettings = ApplicationData.Current.LocalSettings;
 				var expectedState = (string)localSettings.Values["state"];
@@ -70,11 +72,35 @@ namespace PlaylisterUWP
 				_log.Debug(Environment.NewLine + "Authorization code: " + authResponse.Code);
 				var codeVerifier = (String)localSettings.Values["codeVerifier"];
 				var success = await AuthService.PerformCodeExchangeAsync(authResponse.Code, codeVerifier);
+				if (success)
+				{
+					var uploadVideoPage = UploadVideoPage.Content as UploadVideoPage;
+					if (uploadVideoPage != null)
+					{
+						uploadVideoPage.ViewModel.IsLoggedIn = true;
+					}
+				}
+				else
+				{
+					await DisplayLoginError();
+				}
 			}
 			else
 			{
 				Debug.WriteLine(e.Parameter);
 			}
+		}
+
+		private async Task DisplayLoginError()
+		{
+			ContentDialog loginErrorDialog = new ContentDialog
+			{
+				Title = "Login Error",
+				Content = "There was an error connecting to your YouTube account. Please try again later.",
+				CloseButtonText = "Ok"
+			};
+
+			ContentDialogResult result = await loginErrorDialog.ShowAsync();
 		}
 	}
 }

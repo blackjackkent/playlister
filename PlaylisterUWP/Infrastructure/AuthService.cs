@@ -37,6 +37,7 @@
 				$"&state={state}" +
 				$"&code_challenge={codeChallenge}" +
 				$"&code_challenge_method={codeChallengeMethod}";
+			
 			await Launcher.LaunchUriAsync(new Uri(authorizationRequest));
 		}
 
@@ -59,6 +60,8 @@
 			var tokens = JsonObject.Parse(responseString);
 			var accessToken = tokens.GetNamedString("access_token");
 			client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
+			var localSettings = ApplicationData.Current.LocalSettings;
+			localSettings.Values["authToken"] = accessToken;
 			return true;
 		}
 

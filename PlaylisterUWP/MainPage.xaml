@@ -11,14 +11,14 @@
 		<Grid.RowDefinitions>
 			<RowDefinition/>
 		</Grid.RowDefinitions>
-		<Pivot Title="Playlister">
+		<Pivot x:Name="PivotContainer" Title="Playlister">
 			<PivotItem Header="My Tag Packs">
 				<Frame x:Name="MyTagPacksPage" />
 			</PivotItem>
 			<PivotItem Header="Add Tag Pack">
 				<Frame x:Name="AddTagPackPage" />
 			</PivotItem>
-			<PivotItem Header="Upload Video">
+			<PivotItem Header="Upload Video" x:Name="UploadVideoPageContainer">
 				<Frame x:Name="UploadVideoPage" />
 			</PivotItem>
 		</Pivot>

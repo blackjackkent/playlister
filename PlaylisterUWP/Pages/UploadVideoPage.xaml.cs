@@ -17,7 +17,10 @@ using Windows.UI.Xaml.Navigation;
 
 namespace PlaylisterUWP.Pages
 {
+	using System.Diagnostics;
 	using Windows.Storage;
+	using Infrastructure;
+	using MetroLog;
 	using Models.ViewModels;
 
 	/// <summary>
@@ -25,6 +28,9 @@ namespace PlaylisterUWP.Pages
 	/// </summary>
 	public sealed partial class UploadVideoPage : Page
 	{
+		private const string youtubeChannelEndpoint = "https://www.googleapis.com/youtube/v3/channels?part=snippet&mine=true";
+		private readonly ILogger _log = LogManagerFactory.DefaultLogManager.GetLogger<AuthPage>();
+
 		public UploadVideoViewModel ViewModel { get; set; }
 		public UploadVideoPage()
 		{
@@ -33,14 +39,47 @@ namespace PlaylisterUWP.Pages
 			this.DataContext = ViewModel;
 			var localSettings = ApplicationData.Current.LocalSettings;
 			var authToken = (string)localSettings.Values["authToken"];
-			if (string.IsNullOrEmpty(authToken))
+			ViewModel.IsLoggedIn = !string.IsNullOrEmpty(authToken);
+		}
+
+		private async void Button_Click(object sender, RoutedEventArgs e)
+		{
+			_log.Debug("Initializing Auth URI");
+			AuthService.LaunchGoogleAuthUri();
+		}
+
+		private async void Logout_Button_Click(object sender, RoutedEventArgs e)
+		{
+			var localSettings = ApplicationData.Current.LocalSettings;
+			localSettings.Values["authToken"] = null;
+			ViewModel.IsLoggedIn = false;
+		}
+
+		/// <summary>
+		/// Processes the OAuth 2.0 Authorization Response
+		/// </summary>
+		/// <param name="e"></param>
+		protected override async void OnNavigatedTo(NavigationEventArgs e)
+		{
+			var uri = e.Parameter as Uri;
+			if (uri != null)
 			{
-				
-			ViewModel.IsLoggedIn = true;
+				var authResponse = AuthService.ParseAuthorizationResponse(uri, _log);
+				var localSettings = ApplicationData.Current.LocalSettings;
+				var expectedState = (string)localSettings.Values["state"];
+				if (authResponse.State != expectedState)
+				{
+					_log.Error($"Received request with invalid state ({authResponse.State})");
+					return;
+				}
+				localSettings.Values["state"] = null;
+				_log.Debug(Environment.NewLine + "Authorization code: " + authResponse.Code);
+				var codeVerifier = (String)localSettings.Values["codeVerifier"];
+				var success = await AuthService.PerformCodeExchangeAsync(authResponse.Code, codeVerifier);
 			}
 			else
 			{
-				ViewModel.IsLoggedIn = false;
+				Debug.WriteLine(e.Parameter);
 			}
 		}
 	}
