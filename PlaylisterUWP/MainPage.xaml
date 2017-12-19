@@ -5,23 +5,65 @@
     xmlns:local="using:PlaylisterUWP"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewModels="using:PlaylisterUWP.Models.ViewModels"
+    xmlns:converters="using:PlaylisterUWP.Infrastructure.Converters"
     mc:Ignorable="d">
+	<Page.Resources>
+		<converters:BooleanToVisibilityConverter x:Key="bool2vis"/>
+		<converters:BooleanToVisibilityConverter x:Key="bool2visInverse" OnTrue="Collapsed" OnFalse="Visible"/>
+	</Page.Resources>
 
-	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-		<Grid.RowDefinitions>
-			<RowDefinition/>
-		</Grid.RowDefinitions>
-		<Pivot x:Name="PivotContainer" Title="Playlister">
-			<PivotItem Header="My Tag Packs">
-				<Frame x:Name="MyTagPacksPage" />
-			</PivotItem>
-			<PivotItem Header="Add Tag Pack">
-				<Frame x:Name="AddTagPackPage" />
-			</PivotItem>
-			<PivotItem Header="Upload Video" x:Name="UploadVideoPageContainer">
-				<Frame x:Name="UploadVideoPage" />
-			</PivotItem>
-		</Pivot>
+	<StackPanel Background="Red">
 
-	</Grid>
+		<!--	<Grid Visibility="Visible" Visibility="{Binding IsLoggedIn, Converter={StaticResource bool2vis}}">-->
+		<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" x:Name="MainGrid">
+
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="2*"/>
+				<ColumnDefinition Width="2*"/>
+				<ColumnDefinition/>
+			</Grid.ColumnDefinitions>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="*"/>
+			</Grid.RowDefinitions>
+
+			<StackPanel x:Name="FirstGrid" Grid.Column="0" Grid.Row="0" Background="Black">
+				<ListView ItemsSource="{Binding Videos}">
+					<ListView.ItemTemplate>
+						<DataTemplate>
+							<Grid>
+								<Border Background="LightGray" Height="200" Width="200">
+									<TextBlock Text="{Binding}" 
+									           FontSize="48" Foreground="Green"/>
+								</Border>
+							</Grid>
+						</DataTemplate>
+					</ListView.ItemTemplate>
+					<ListView.Items>
+						<x:String>One</x:String>
+						<ListViewItem>Two</ListViewItem>
+					</ListView.Items>
+				</ListView>
+			</StackPanel>
+			<StackPanel x:Name="SecondGrid" Grid.Column="1" Grid.Row="0" Background="Green" />
+			<StackPanel x:Name="ThirdGrid" Grid.Column="2" Grid.Row="0" Background="Black" />
+
+		</Grid>
+
+		<RelativePanel Background="AliceBlue">
+			<StackPanel Visibility="Collapsed">
+				<!--	<StackPanel RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" Visibility="{Binding IsLoggedIn, Converter={StaticResource bool2visInverse}}">-->
+				<TextBlock
+					Margin="10"
+					HorizontalAlignment="Center"
+					Style="{StaticResource HeaderTextBlockStyle}">PlayLister</TextBlock>
+				<TextBlock
+					Margin="10"
+					HorizontalAlignment="Center"
+					Style="{StaticResource TitleTextBlockStyle}"
+					Text="You are not logged in!" />
+				<Button Margin="10" HorizontalAlignment="Center" Content="Connect to YouTube" x:Name="LogInButton" Click="Button_Click"></Button>
+			</StackPanel>
+		</RelativePanel>
+	</StackPanel>
 </Page>

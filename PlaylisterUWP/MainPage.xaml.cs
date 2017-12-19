@@ -27,6 +27,7 @@ namespace PlaylisterUWP
 	using Windows.UI.ViewManagement;
 	using Infrastructure;
 	using MetroLog;
+	using Models.ViewModels;
 	using Pages;
 
 	public sealed partial class MainPage : Page
@@ -37,18 +38,13 @@ namespace PlaylisterUWP
 		public MainPage()
 		{
 			this.InitializeComponent();
-			MyTagPacksPage.Navigate(typeof(MyTagPacksPage));
-			AddTagPackPage.Navigate(typeof(AddTagPackPage));
-			UploadVideoPage.Navigate(typeof(UploadVideoPage));
+			this.ViewModel = new MainPageViewModel();
+			this.DataContext = ViewModel;
 			ApplicationView.PreferredLaunchViewSize = new Size(800, 600);
 			ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
 		}
-		
-		private async void Button_Click(object sender, RoutedEventArgs e)
-		{
-			_log.Debug("Initializing Auth URI");
-			AuthService.LaunchGoogleAuthUri();
-		}
+
+		public MainPageViewModel ViewModel { get; set; }
 
 		/// <summary>
 		/// Processes the OAuth 2.0 Authorization Response
@@ -56,34 +52,10 @@ namespace PlaylisterUWP
 		/// <param name="e"></param>
 		protected override async void OnNavigatedTo(NavigationEventArgs e)
 		{
-			  var uri = e.Parameter as Uri;
+			var uri = e.Parameter as Uri;
 			if (uri != null)
 			{
-				PivotContainer.SelectedItem = UploadVideoPageContainer;
-				var authResponse = AuthService.ParseAuthorizationResponse(uri, _log);
-				var localSettings = ApplicationData.Current.LocalSettings;
-				var expectedState = (string)localSettings.Values["state"];
-				if (authResponse.State != expectedState)
-				{
-					_log.Error($"Received request with invalid state ({authResponse.State})");
-					return;
-				}
-				localSettings.Values["state"] = null;
-				_log.Debug(Environment.NewLine + "Authorization code: " + authResponse.Code);
-				var codeVerifier = (String)localSettings.Values["codeVerifier"];
-				var success = await AuthService.PerformCodeExchangeAsync(authResponse.Code, codeVerifier);
-				if (success)
-				{
-					var uploadVideoPage = UploadVideoPage.Content as UploadVideoPage;
-					if (uploadVideoPage != null)
-					{
-						uploadVideoPage.ViewModel.IsLoggedIn = true;
-					}
-				}
-				else
-				{
-					await DisplayLoginError();
-				}
+				await RunAuthenticationFlow(uri);
 			}
 			else
 			{
@@ -91,16 +63,53 @@ namespace PlaylisterUWP
 			}
 		}
 
+		private async Task RunAuthenticationFlow(Uri uri)
+		{
+			var authResponse = AuthService.ParseAuthorizationResponse(uri, _log);
+			var localSettings = ApplicationData.Current.LocalSettings;
+			var expectedState = (string)localSettings.Values["state"];
+			if (authResponse.State != expectedState)
+			{
+				_log.Error($"Received request with invalid state ({authResponse.State})");
+				return;
+			}
+			localSettings.Values["state"] = null;
+			_log.Debug(Environment.NewLine + "Authorization code: " + authResponse.Code);
+			var codeVerifier = (String)localSettings.Values["codeVerifier"];
+			var success = await AuthService.PerformCodeExchangeAsync(authResponse.Code, codeVerifier);
+			if (success)
+			{
+				ViewModel.IsLoggedIn = true;
+			}
+			else
+			{
+				ViewModel.IsLoggedIn = false;
+				await DisplayLoginError();
+			}
+		}
+
+		private async void Button_Click(object sender, RoutedEventArgs e)
+		{
+			_log.Debug("Initializing Auth URI");
+			AuthService.LaunchGoogleAuthUri();
+		}
+
+		private async void Logout_Button_Click(object sender, RoutedEventArgs e)
+		{
+			var localSettings = ApplicationData.Current.LocalSettings;
+			localSettings.Values["authToken"] = null;
+			ViewModel.IsLoggedIn = false;
+		}
+
 		private async Task DisplayLoginError()
 		{
-			ContentDialog loginErrorDialog = new ContentDialog
+			var loginErrorDialog = new ContentDialog
 			{
 				Title = "Login Error",
 				Content = "There was an error connecting to your YouTube account. Please try again later.",
 				CloseButtonText = "Ok"
 			};
-
-			ContentDialogResult result = await loginErrorDialog.ShowAsync();
+			var result = await loginErrorDialog.ShowAsync();
 		}
 	}
 }

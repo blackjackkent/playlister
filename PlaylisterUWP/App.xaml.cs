@@ -17,6 +17,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace PlaylisterUWP
 {
+	using Windows.UI.ViewManagement;
 	using MetroLog;
 	using MetroLog.Targets;
 
@@ -48,7 +49,7 @@ namespace PlaylisterUWP
 		/// <param name="e">Details about the launch request and process.</param>
 		protected override void OnLaunched(LaunchActivatedEventArgs e)
 	    {
-		    Frame rootFrame = Window.Current.Content as Frame;
+			Frame rootFrame = Window.Current.Content as Frame;
 
 		    // Do not repeat app initialization when the Window already has content,
 		    // just ensure that the window is active
@@ -66,7 +67,8 @@ namespace PlaylisterUWP
 
 			    // Place the frame in the current Window
 			    Window.Current.Content = rootFrame;
-		    }
+
+			}
 
 		    if (e.PrelaunchActivated == false)
 		    {
@@ -79,7 +81,23 @@ namespace PlaylisterUWP
 			    }
 			    // Ensure the current window is active
 			    Window.Current.Activate();
-		    }
+				
+			    var titleBar = ApplicationView.GetForCurrentView().TitleBar;
+			    titleBar.BackgroundColor = Windows.UI.Colors.DarkSlateBlue;
+			    titleBar.ForegroundColor = Windows.UI.Colors.White;
+			    titleBar.ButtonForegroundColor = Windows.UI.Colors.White;
+			    titleBar.ButtonBackgroundColor = Windows.UI.Colors.DarkSlateBlue;
+			    titleBar.ButtonHoverForegroundColor = Windows.UI.Colors.White;
+			    titleBar.ButtonHoverBackgroundColor = Windows.UI.Colors.SlateBlue;
+			    titleBar.ButtonPressedForegroundColor = Windows.UI.Colors.Gray;
+			    titleBar.ButtonPressedBackgroundColor = Windows.UI.Colors.LightSlateGray;
+
+			    // Set inactive window colors
+			    titleBar.InactiveForegroundColor = Windows.UI.Colors.White;
+			    titleBar.InactiveBackgroundColor = Windows.UI.Colors.SlateBlue;
+			    titleBar.ButtonInactiveForegroundColor = Windows.UI.Colors.White;
+			    titleBar.ButtonInactiveBackgroundColor = Windows.UI.Colors.SlateBlue;
+			}
 	    }
 
 	    /// <summary>

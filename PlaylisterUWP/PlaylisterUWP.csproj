@@ -105,6 +105,7 @@
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\GoogleAuthorizationResponse.cs" />
+    <Compile Include="Models\ViewModels\MainPageViewModel.cs" />
     <Compile Include="Models\ViewModels\UploadVideoViewModel.cs" />
     <Compile Include="Pages\AddTagPackPage.xaml.cs">
       <DependentUpon>AddTagPackPage.xaml</DependentUpon>
