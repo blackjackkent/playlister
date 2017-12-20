@@ -8,6 +8,8 @@
 	using Windows.Data.Json;
 	using Windows.Storage;
 	using Windows.System;
+	using Google.Apis.Auth.OAuth2;
+	using Google.Apis.Auth.OAuth2.Flows;
 	using MetroLog;
 	using Models;
 
@@ -34,7 +36,7 @@
 				$"&scope=openid%20profile%20{YouTubeReadOnlyScope}%20{YouTubeUploadScope}" +
 				$"&redirect_uri={Uri.EscapeDataString(AuthorizationRedirectUri)}" +
 				$"&client_id={YouTubeApiClientId}" +
-				$"&state={state}" +
+				$"&state={state}" +	
 				$"&code_challenge={codeChallenge}" +
 				$"&code_challenge_method={codeChallengeMethod}";
 			
@@ -46,7 +48,6 @@
 			var tokenRequestBody =
 				$"code={code}&redirect_uri={System.Uri.EscapeDataString(AuthorizationRedirectUri)}" +
 				$"&client_id={YouTubeApiClientId}&code_verifier={codeVerifier}" +
-				$"&scope=" +
 				$"&grant_type=authorization_code";
 			var content = new StringContent(tokenRequestBody, Encoding.UTF8, "application/x-www-form-urlencoded");
 			var handler = new HttpClientHandler {AllowAutoRedirect = true};
@@ -59,9 +60,11 @@
 			}
 			var tokens = JsonObject.Parse(responseString);
 			var accessToken = tokens.GetNamedString("access_token");
+			var refreshToken = tokens.GetNamedString("refresh_token");
 			client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
 			var localSettings = ApplicationData.Current.LocalSettings;
 			localSettings.Values["authToken"] = accessToken;
+			localSettings.Values["refreshToken"] = refreshToken;
 			return true;
 		}
 
@@ -88,6 +91,27 @@
 				Code = code,
 				State = incoming_state
 			};
+		}
+
+		public static UserCredential GetUserCredential()
+		{
+			var localSettings = ApplicationData.Current.LocalSettings;
+			var token = new Google.Apis.Auth.OAuth2.Responses.TokenResponse()
+			{
+				AccessToken = localSettings.Values["authToken"].ToString(),
+				RefreshToken = localSettings.Values["refreshToken"].ToString(),
+				ExpiresInSeconds = 3600,
+				IssuedUtc = DateTime.Now
+			};
+			var fakeflow = new GoogleAuthorizationCodeFlow(new GoogleAuthorizationCodeFlow.Initializer
+			{
+				ClientSecrets = new ClientSecrets
+				{
+					ClientId = YouTubeApiClientId
+				}
+			});
+			var credential = new UserCredential(fakeflow, "blahblah", token);
+			return credential;
 		}
 	}
 }

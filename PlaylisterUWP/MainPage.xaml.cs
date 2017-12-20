@@ -22,26 +22,63 @@ using System.Diagnostics;
 
 namespace PlaylisterUWP
 {
+	using System.Collections.Generic;
+	using System.Collections.ObjectModel;
 	using System.Threading.Tasks;
 	using Windows.Foundation;
 	using Windows.UI.ViewManagement;
+	using Google.Apis.Services;
+	using Google.Apis.YouTube.v3;
 	using Infrastructure;
 	using MetroLog;
 	using Models.ViewModels;
-	using Pages;
 
 	public sealed partial class MainPage : Page
 	{
-		private const string youtubeChannelEndpoint = "https://www.googleapis.com/youtube/v3/channels?part=snippet&mine=true";
 		private readonly ILogger _log = LogManagerFactory.DefaultLogManager.GetLogger<MainPage>();
 
 		public MainPage()
 		{
-			this.InitializeComponent();
-			this.ViewModel = new MainPageViewModel();
-			this.DataContext = ViewModel;
+			InitializeComponent();
+			ViewModel = new MainPageViewModel();
+			DataContext = ViewModel;
 			ApplicationView.PreferredLaunchViewSize = new Size(800, 600);
 			ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
+
+			var localSettings = ApplicationData.Current.LocalSettings;
+			if (localSettings.Values["authToken"] != null)
+			{
+				ViewModel.IsLoggedIn = true;
+				FetchYouTubeInfo();
+			}
+		}
+
+		private async void FetchYouTubeInfo()
+		{
+			var service = new YouTubeService(new BaseClientService.Initializer
+			{
+				HttpClientInitializer = AuthService.GetUserCredential(),
+				ApplicationName = "PlaylisterUWP"
+			});
+
+			var channelsListRequest = service.Channels.List("contentDetails");
+			channelsListRequest.Mine = true;
+			var channelsListResponse = await channelsListRequest.ExecuteAsync();
+			var channel = channelsListResponse.Items.FirstOrDefault();
+			if (channel == null)
+			{
+				ViewModel.RecentUploads = new ObservableCollection<YouTubeUploadViewModel>(new List<YouTubeUploadViewModel>());
+				return;
+			}
+			var uploadListId = channel.ContentDetails.RelatedPlaylists.Uploads;
+			var playlistItemsListRequest = service.PlaylistItems.List("snippet");
+			playlistItemsListRequest.PlaylistId = uploadListId;
+			playlistItemsListRequest.MaxResults = 10;
+			playlistItemsListRequest.PageToken = "";
+			var playlistItemsListResponse = await playlistItemsListRequest.ExecuteAsync();
+			var videoItems = playlistItemsListResponse.Items;
+			var viewModels = videoItems.Select(v => new YouTubeUploadViewModel(v)).ToList();
+			ViewModel.RecentUploads = new ObservableCollection<YouTubeUploadViewModel>(viewModels);
 		}
 
 		public MainPageViewModel ViewModel { get; set; }
@@ -88,20 +125,21 @@ namespace PlaylisterUWP
 			}
 		}
 
-		private async void Button_Click(object sender, RoutedEventArgs e)
+		private void Button_Click(object sender, RoutedEventArgs e)
 		{
 			_log.Debug("Initializing Auth URI");
 			AuthService.LaunchGoogleAuthUri();
 		}
 
-		private async void Logout_Button_Click(object sender, RoutedEventArgs e)
+		private void Logout_Button_Click(object sender, RoutedEventArgs e)
 		{
 			var localSettings = ApplicationData.Current.LocalSettings;
 			localSettings.Values["authToken"] = null;
+			localSettings.Values["refreshToken"] = null;
 			ViewModel.IsLoggedIn = false;
 		}
 
-		private async Task DisplayLoginError()
+		private static async Task DisplayLoginError()
 		{
 			var loginErrorDialog = new ContentDialog
 			{
@@ -109,7 +147,14 @@ namespace PlaylisterUWP
 				Content = "There was an error connecting to your YouTube account. Please try again later.",
 				CloseButtonText = "Ok"
 			};
-			var result = await loginErrorDialog.ShowAsync();
+			await loginErrorDialog.ShowAsync();
+		}
+
+		private void UploadedVideosList_OnItemClick(object sender, ItemClickEventArgs e)
+		{
+			var url = ((YouTubeUploadViewModel) e.ClickedItem).Url;
+			var uri = new Uri(url);
+			Windows.System.Launcher.LaunchUriAsync(uri);
 		}
 	}
 }

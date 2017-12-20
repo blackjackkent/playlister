@@ -13,57 +13,75 @@
 		<converters:BooleanToVisibilityConverter x:Key="bool2visInverse" OnTrue="Collapsed" OnFalse="Visible"/>
 	</Page.Resources>
 
-	<StackPanel Background="Red">
+	<Grid Background="Red">
 
-		<!--	<Grid Visibility="Visible" Visibility="{Binding IsLoggedIn, Converter={StaticResource bool2vis}}">-->
-		<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" x:Name="MainGrid">
-
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*"/>
+		</Grid.ColumnDefinitions>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="*"/>
+		</Grid.RowDefinitions>
+		<Grid Background="{StaticResource ApplicationPageBackgroundThemeBrush}" Visibility="{Binding IsLoggedIn, Converter={StaticResource bool2vis}}">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="2*"/>
 				<ColumnDefinition Width="2*"/>
-				<ColumnDefinition/>
+				<ColumnDefinition Width="*"/>
 			</Grid.ColumnDefinitions>
 			<Grid.RowDefinitions>
+				<RowDefinition Height="100"></RowDefinition>
 				<RowDefinition Height="*"/>
 			</Grid.RowDefinitions>
-
-			<StackPanel x:Name="FirstGrid" Grid.Column="0" Grid.Row="0" Background="Black">
-				<ListView ItemsSource="{Binding Videos}">
+			<TextBlock Style="{StaticResource HeaderTextBlockStyle}" Margin="20" VerticalAlignment="Center" Grid.Row="0" Grid.Column="0">PlayLister</TextBlock>
+			<StackPanel Orientation="Horizontal" Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Center">
+				<TextBlock Style="{StaticResource BodyTextBlockStyle}" Margin="2" VerticalAlignment="Center">Logged in as </TextBlock>
+				<TextBlock Style="{StaticResource BodyTextBlockStyle}" Margin="2" VerticalAlignment="Center">BlackjackKent</TextBlock>
+				<Button Content="Log Out" Click="Logout_Button_Click" Margin="20" VerticalAlignment="Center"></Button>
+			</StackPanel>
+			<StackPanel Grid.Column="0" Grid.Row="1">
+				<TextBlock
+					Margin="20"
+					Style="{StaticResource SubheaderTextBlockStyle}"
+					Foreground="CadetBlue"
+				>Recent Uploads</TextBlock>
+				<ListView x:Name="UploadedVideosList" ItemsSource="{Binding RecentUploads}" IsItemClickEnabled="True" ItemClick="UploadedVideosList_OnItemClick">
 					<ListView.ItemTemplate>
 						<DataTemplate>
-							<Grid>
-								<Border Background="LightGray" Height="200" Width="200">
-									<TextBlock Text="{Binding}" 
-									           FontSize="48" Foreground="Green"/>
-								</Border>
+							<Grid Margin="10">
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="100"/>
+									<ColumnDefinition Width="*"/>
+								</Grid.ColumnDefinitions>
+								<Grid.RowDefinitions>
+									<RowDefinition Height="75"></RowDefinition>
+								</Grid.RowDefinitions>
+								<Image Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Source="{Binding ImagePath}" Width="100" Height="75"></Image>
+								<StackPanel Grid.Column="1" Margin="5">
+									<TextBlock Style="{StaticResource BodyTextBlockStyle}" FontWeight="Bold" Text="{Binding Title}" TextTrimming="CharacterEllipsis" MaxLines="2"></TextBlock>
+									<TextBlock Style="{StaticResource BodyTextBlockStyle}" Text="{Binding UploadDateTime}"></TextBlock>
+								</StackPanel>
 							</Grid>
 						</DataTemplate>
 					</ListView.ItemTemplate>
-					<ListView.Items>
-						<x:String>One</x:String>
-						<ListViewItem>Two</ListViewItem>
-					</ListView.Items>
 				</ListView>
 			</StackPanel>
-			<StackPanel x:Name="SecondGrid" Grid.Column="1" Grid.Row="0" Background="Green" />
-			<StackPanel x:Name="ThirdGrid" Grid.Column="2" Grid.Row="0" Background="Black" />
-
 		</Grid>
 
-		<RelativePanel Background="AliceBlue">
-			<StackPanel Visibility="Collapsed">
-				<!--	<StackPanel RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" Visibility="{Binding IsLoggedIn, Converter={StaticResource bool2visInverse}}">-->
+		<RelativePanel Background="White" x:Name="LoggedOutView" Visibility="{Binding IsLoggedIn, Converter={StaticResource bool2visInverse}}">
+			<StackPanel RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True">
 				<TextBlock
 					Margin="10"
 					HorizontalAlignment="Center"
-					Style="{StaticResource HeaderTextBlockStyle}">PlayLister</TextBlock>
+					Style="{StaticResource HeaderTextBlockStyle}"
+					Foreground="CadetBlue"
+					>PlayLister</TextBlock>
 				<TextBlock
 					Margin="10"
 					HorizontalAlignment="Center"
 					Style="{StaticResource TitleTextBlockStyle}"
 					Text="You are not logged in!" />
-				<Button Margin="10" HorizontalAlignment="Center" Content="Connect to YouTube" x:Name="LogInButton" Click="Button_Click"></Button>
+				<Button Margin="10" Background="CadetBlue" Foreground="White" HorizontalAlignment="Center" Content="Connect to YouTube" x:Name="LogInButton" Click="Button_Click"></Button>
 			</StackPanel>
 		</RelativePanel>
-	</StackPanel>
+		</Grid>
 </Page>
+

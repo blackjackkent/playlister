@@ -83,20 +83,20 @@ namespace PlaylisterUWP
 			    Window.Current.Activate();
 				
 			    var titleBar = ApplicationView.GetForCurrentView().TitleBar;
-			    titleBar.BackgroundColor = Windows.UI.Colors.DarkSlateBlue;
+			    titleBar.BackgroundColor = Windows.UI.Colors.CadetBlue;
 			    titleBar.ForegroundColor = Windows.UI.Colors.White;
 			    titleBar.ButtonForegroundColor = Windows.UI.Colors.White;
-			    titleBar.ButtonBackgroundColor = Windows.UI.Colors.DarkSlateBlue;
-			    titleBar.ButtonHoverForegroundColor = Windows.UI.Colors.White;
-			    titleBar.ButtonHoverBackgroundColor = Windows.UI.Colors.SlateBlue;
+			    titleBar.ButtonBackgroundColor = Windows.UI.Colors.CadetBlue;
+			    titleBar.ButtonHoverForegroundColor = Windows.UI.Colors.CadetBlue;
+			    titleBar.ButtonHoverBackgroundColor = Windows.UI.Colors.AliceBlue;
 			    titleBar.ButtonPressedForegroundColor = Windows.UI.Colors.Gray;
 			    titleBar.ButtonPressedBackgroundColor = Windows.UI.Colors.LightSlateGray;
 
 			    // Set inactive window colors
-			    titleBar.InactiveForegroundColor = Windows.UI.Colors.White;
-			    titleBar.InactiveBackgroundColor = Windows.UI.Colors.SlateBlue;
-			    titleBar.ButtonInactiveForegroundColor = Windows.UI.Colors.White;
-			    titleBar.ButtonInactiveBackgroundColor = Windows.UI.Colors.SlateBlue;
+			    titleBar.InactiveForegroundColor = Windows.UI.Colors.CadetBlue;
+			    titleBar.InactiveBackgroundColor = Windows.UI.Colors.AliceBlue;
+			    titleBar.ButtonInactiveForegroundColor = Windows.UI.Colors.CadetBlue;
+			    titleBar.ButtonInactiveBackgroundColor = Windows.UI.Colors.AliceBlue;
 			}
 	    }
 
