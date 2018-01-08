@@ -27,12 +27,14 @@ namespace PlaylisterUWP
 	using System.Threading.Tasks;
 	using Windows.Foundation;
 	using Windows.UI.ViewManagement;
+	using Windows.UI.Xaml.Media.Animation;
 	using Google.Apis.Services;
 	using Google.Apis.YouTube.v3;
 	using Infrastructure;
 	using MetroLog;
 	using Models.ViewModels;
 	using Newtonsoft.Json;
+	using Pages;
 
 	public sealed partial class MainPage : Page
 	{
@@ -172,6 +174,11 @@ namespace PlaylisterUWP
 			var url = ((YouTubeUploadViewModel) e.ClickedItem).Url;
 			var uri = new Uri(url);
 			Windows.System.Launcher.LaunchUriAsync(uri);
+		}
+
+		private void CreateTagPackButton_OnClick(object sender, RoutedEventArgs e)
+		{
+			Frame.Navigate(typeof(AddTagPackPage), null, new DrillInNavigationTransitionInfo());
 		}
 	}
 }

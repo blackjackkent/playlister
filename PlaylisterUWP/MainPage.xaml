@@ -89,6 +89,7 @@
 						Width="30"
 						Padding="5"
 						Margin="0 0 20 0"
+						Click="CreateTagPackButton_OnClick"
 						>
 						<TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE710;" FontSize="10" />
 					</Button>

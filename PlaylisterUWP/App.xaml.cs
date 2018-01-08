@@ -18,6 +18,7 @@ using Windows.UI.Xaml.Navigation;
 namespace PlaylisterUWP
 {
 	using Windows.UI.ViewManagement;
+	using Windows.UI.Xaml.Media.Animation;
 	using MetroLog;
 	using MetroLog.Targets;
 
@@ -69,7 +70,10 @@ namespace PlaylisterUWP
 			    Window.Current.Content = rootFrame;
 
 			}
-
+		    rootFrame.ContentTransitions = new TransitionCollection
+		    {
+			    new NavigationThemeTransition()
+		    };
 		    if (e.PrelaunchActivated == false)
 		    {
 			    if (rootFrame.Content == null)
