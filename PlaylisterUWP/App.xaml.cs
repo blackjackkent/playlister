@@ -17,6 +17,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace PlaylisterUWP
 {
+	using Windows.UI.Core;
 	using Windows.UI.ViewManagement;
 	using Windows.UI.Xaml.Media.Animation;
 	using MetroLog;
@@ -102,7 +103,8 @@ namespace PlaylisterUWP
 			    titleBar.ButtonInactiveForegroundColor = Windows.UI.Colors.CadetBlue;
 			    titleBar.ButtonInactiveBackgroundColor = Windows.UI.Colors.AliceBlue;
 			}
-	    }
+		    SystemNavigationManager.GetForCurrentView().BackRequested += App_BackRequested;
+		}
 
 	    /// <summary>
 	    /// Invoked when the application is launched through a custom URI scheme, such as
@@ -131,12 +133,26 @@ namespace PlaylisterUWP
 		    }
 	    }
 
-	    /// <summary>
-	    /// Invoked when Navigation to a certain page fails
-	    /// </summary>
-	    /// <param name="sender">The Frame which failed navigation</param>
-	    /// <param name="e">Details about the navigation failure</param>
-	    void OnNavigationFailed(object sender, NavigationFailedEventArgs e)
+	    private void App_BackRequested(object sender, BackRequestedEventArgs e)
+	    {
+		    Frame rootFrame = Window.Current.Content as Frame;
+		    if (rootFrame == null)
+			    return;
+
+		    // If we can go back and the event has not already been handled, do so.
+		    if (rootFrame.CanGoBack && e.Handled == false)
+		    {
+			    e.Handled = true;
+			    rootFrame.GoBack();
+		    }
+	    }
+
+		/// <summary>
+		/// Invoked when Navigation to a certain page fails
+		/// </summary>
+		/// <param name="sender">The Frame which failed navigation</param>
+		/// <param name="e">Details about the navigation failure</param>
+		void OnNavigationFailed(object sender, NavigationFailedEventArgs e)
 	    {
 		    throw new Exception("Failed to load Page " + e.SourcePageType.FullName);
 	    }

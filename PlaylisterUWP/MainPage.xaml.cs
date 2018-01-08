@@ -34,7 +34,6 @@ namespace PlaylisterUWP
 	using MetroLog;
 	using Models.ViewModels;
 	using Newtonsoft.Json;
-	using Pages;
 
 	public sealed partial class MainPage : Page
 	{
