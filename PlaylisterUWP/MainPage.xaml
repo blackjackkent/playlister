@@ -23,27 +23,83 @@
 		</Grid.RowDefinitions>
 		<Grid Background="{StaticResource ApplicationPageBackgroundThemeBrush}" Visibility="{Binding IsLoggedIn, Converter={StaticResource bool2vis}}">
 			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="2*"/>
-				<ColumnDefinition Width="2*"/>
+				<ColumnDefinition Width="*"/>
 				<ColumnDefinition Width="*"/>
 			</Grid.ColumnDefinitions>
 			<Grid.RowDefinitions>
 				<RowDefinition Height="100"></RowDefinition>
 				<RowDefinition Height="*"/>
 			</Grid.RowDefinitions>
-			<TextBlock Style="{StaticResource HeaderTextBlockStyle}" Margin="20" VerticalAlignment="Center" Grid.Row="0" Grid.Column="0">PlayLister</TextBlock>
-			<StackPanel Orientation="Horizontal" Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Center">
+			<TextBlock Name="HeaderTitle" Style="{StaticResource HeaderTextBlockStyle}" Margin="20" VerticalAlignment="Center" Grid.Row="0" Grid.Column="0">PlayLister</TextBlock>
+			<StackPanel Name="HeaderControls" Orientation="Horizontal" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Center">
 				<TextBlock Style="{StaticResource BodyTextBlockStyle}" Margin="2" VerticalAlignment="Center">Logged in as </TextBlock>
 				<TextBlock Style="{StaticResource BodyTextBlockStyle}" Margin="2" VerticalAlignment="Center">BlackjackKent</TextBlock>
 				<Button Content="Log Out" Click="Logout_Button_Click" Margin="20" VerticalAlignment="Center"></Button>
 			</StackPanel>
-			<StackPanel Grid.Column="0" Grid.Row="1">
-				<TextBlock
-					Margin="20"
-					Style="{StaticResource SubheaderTextBlockStyle}"
-					Foreground="CadetBlue"
-				>Recent Uploads</TextBlock>
+			<StackPanel Name="UploadedVideoListPanel" Grid.Column="0" Grid.Row="1">
+				<StackPanel Orientation="Horizontal">
+					<TextBlock
+						Margin="20"
+						HorizontalAlignment="Left"
+						Style="{StaticResource FlyoutPickerTitleTextBlockStyle}"
+						Foreground="CadetBlue"
+					>Recent Uploads</TextBlock>
+					<Button Name="UploadVideoButton" HorizontalAlignment="Right">Upload Video</Button>
+				</StackPanel>
 				<ListView x:Name="UploadedVideosList" ItemsSource="{Binding RecentUploads}" IsItemClickEnabled="True" ItemClick="UploadedVideosList_OnItemClick">
+					<ListView.ItemTemplate>
+						<DataTemplate>
+							<Grid Margin="10">
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="100"/>
+									<ColumnDefinition Width="*"/>
+								</Grid.ColumnDefinitions>
+								<Grid.RowDefinitions>
+									<RowDefinition Height="75"></RowDefinition>
+								</Grid.RowDefinitions>
+								<Image Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Source="{Binding ImagePath}" Width="100" Height="75"></Image>
+								<StackPanel Grid.Column="1" Margin="5">
+									<TextBlock Style="{StaticResource BodyTextBlockStyle}" FontWeight="Bold" Text="{Binding Title}" TextTrimming="CharacterEllipsis" MaxLines="2"></TextBlock>
+									<TextBlock Style="{StaticResource BodyTextBlockStyle}" Text="{Binding UploadDateTime}"></TextBlock>
+								</StackPanel>
+							</Grid>
+						</DataTemplate>
+					</ListView.ItemTemplate>
+				</ListView>
+			</StackPanel>
+			<StackPanel Background="AliceBlue" Name="TagPackListPanel" Grid.Column="1" Grid.Row="1">
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*"></ColumnDefinition>
+						<ColumnDefinition Width="Auto"></ColumnDefinition>
+					</Grid.ColumnDefinitions>
+					<TextBlock
+						Grid.Column="0"
+						Margin="20"
+						HorizontalAlignment="Left"
+						Style="{StaticResource FlyoutPickerTitleTextBlockStyle}"
+						Foreground="CadetBlue">
+					Your Tag Packs
+					</TextBlock>
+					<Button
+						Grid.Column="1"
+						Name="CreateTagPackButton"
+						HorizontalAlignment="Right"
+						Height="30"
+						Width="30"
+						Padding="5"
+						Margin="0 0 20 0"
+						>
+						<TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE710;" FontSize="10" />
+					</Button>
+				</Grid>
+				<TextBlock
+					Name="NoTagPacksText"
+					Visibility="Collapsed"
+					Margin="20"
+					TextWrapping="Wrap">
+					You have not yet saved any tag packs. Click the plus sign to get started.</TextBlock>
+				<ListView x:Name="TagPackList" ItemsSource="{Binding TagPacks}" IsItemClickEnabled="True" ItemClick="UploadedVideosList_OnItemClick">
 					<ListView.ItemTemplate>
 						<DataTemplate>
 							<Grid Margin="10">

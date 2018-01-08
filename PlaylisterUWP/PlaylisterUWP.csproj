@@ -106,6 +106,7 @@
     </Compile>
     <Compile Include="Models\GoogleAuthorizationResponse.cs" />
     <Compile Include="Models\ViewModels\MainPageViewModel.cs" />
+    <Compile Include="Models\ViewModels\TagPackViewModel.cs" />
     <Compile Include="Models\ViewModels\UploadVideoViewModel.cs" />
     <Compile Include="Models\ViewModels\YouTubeUploadViewModel.cs" />
     <Compile Include="Pages\AddTagPackPage.xaml.cs">

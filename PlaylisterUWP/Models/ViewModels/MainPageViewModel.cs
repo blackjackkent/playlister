@@ -10,6 +10,7 @@
 	    // These fields hold the values for the public properties.
 	    private bool _isLoggedIn;
 	    private ObservableCollection<YouTubeUploadViewModel> _recentUploads;
+	    private ObservableCollection<TagPackViewModel> _tagPacks;
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
@@ -25,6 +26,7 @@
 	    {
 		    _isLoggedIn = false;
 			_recentUploads = new ObservableCollection<YouTubeUploadViewModel>(new List<YouTubeUploadViewModel>());
+		    _tagPacks = new ObservableCollection<TagPackViewModel>(new List<TagPackViewModel>());
 	    }
 
 	    public bool IsLoggedIn
@@ -48,6 +50,17 @@
 			    if (value == _recentUploads) return;
 			    _recentUploads = value;
 			    NotifyPropertyChanged();
+		    }
+	    }
+
+	    public ObservableCollection<TagPackViewModel> TagPacks
+	    {
+		    get => _tagPacks;
+		    set
+		    {
+			    if (value == _tagPacks) return;
+			    _tagPacks = value;
+				NotifyPropertyChanged();
 		    }
 	    }
 	}

@@ -16,7 +16,7 @@
 		{
 			Title = item.Snippet.Title;
 			UploadDateTime = item.Snippet.PublishedAt.GetValueOrDefault();
-			ImagePath = item.Snippet.Thumbnails.Standard.Url;
+			ImagePath = item.Snippet.Thumbnails.Standard?.Url;
 			Url = "https://www.youtube.com/watch?v=" + item.Snippet.ResourceId.VideoId;
 		}
 	}

@@ -32,6 +32,7 @@ namespace PlaylisterUWP
 	using Infrastructure;
 	using MetroLog;
 	using Models.ViewModels;
+	using Newtonsoft.Json;
 
 	public sealed partial class MainPage : Page
 	{
@@ -50,7 +51,23 @@ namespace PlaylisterUWP
 			{
 				ViewModel.IsLoggedIn = true;
 				FetchYouTubeInfo();
+				FetchTagPacks();
 			}
+		}
+
+		private void FetchTagPacks()
+		{
+			var localSettings = ApplicationData.Current.LocalSettings;
+			var tagPackJson = (string)localSettings.Values["tagPacks"];
+			if (string.IsNullOrEmpty(tagPackJson))
+			{
+				ViewModel.TagPacks = new ObservableCollection<TagPackViewModel>(new List<TagPackViewModel>());
+				NoTagPacksText.Visibility = Visibility.Visible;
+				return;
+			}
+			var tagPacks = JsonConvert.DeserializeObject<List<TagPackViewModel>>(tagPackJson);
+			ViewModel.TagPacks = new ObservableCollection<TagPackViewModel>(tagPacks);
+			NoTagPacksText.Visibility = Visibility.Collapsed;
 		}
 
 		private async void FetchYouTubeInfo()
