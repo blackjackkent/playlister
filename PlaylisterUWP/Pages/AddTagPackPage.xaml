@@ -31,20 +31,20 @@
 			</Grid.ColumnDefinitions>
 			<StackPanel Grid.Row="0" Grid.Column="0">
 				<TextBlock Text="Tag Pack Title" Style="{StaticResource BodyTextBlockStyle}" />
-				<TextBox Name="TagPackTitleTextBox"></TextBox>
+				<TextBox Name="TagPackTitleTextBox" Text="{Binding TagPackTitle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
 			</StackPanel>
 			<StackPanel Margin="20" Grid.Row="0" Grid.Column="1">
 				<TextBlock TextWrapping="Wrap" Style="{StaticResource CaptionTextBlockStyle}">Give your tag pack a descriptive title that represents the type of videos it's used for.</TextBlock>
 			</StackPanel>
 			<StackPanel Grid.Row="1" Grid.Column="0">
 				<TextBlock Text="Tags in Tag Pack" Style="{StaticResource BodyTextBlockStyle}" />
-				<TextBox Name="TagPackTagsTextBox" Height="150"></TextBox>
+				<TextBox Name="TagPackTagsTextBox" TextWrapping="Wrap" Height="150" Text="{Binding TagPackTags, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
 			</StackPanel>
 			<StackPanel Margin="20" Grid.Row="1" Grid.Column="1">
 				<TextBlock TextWrapping="Wrap" Style="{StaticResource CaptionTextBlockStyle}">Enter the tags in this tag pack in a comma-separated list.<LineBreak />
 					(e.g. "there,are,four,tags")</TextBlock>
 			</StackPanel>
-			<Button Grid.Row="2" Margin="0 20 0 0" Name="AddTagPackSubmitButton" HorizontalAlignment="Right">Submit</Button>
+			<Button Grid.Row="2" Margin="0 20 0 0" Name="AddTagPackSubmitButton" HorizontalAlignment="Right" Click="AddTagPackSubmitButton_OnClick">Submit</Button>
 		</Grid>
 	</StackPanel>
 </Page>

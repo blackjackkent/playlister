@@ -58,7 +58,7 @@
 									<RowDefinition Height="75"></RowDefinition>
 								</Grid.RowDefinitions>
 								<Image Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Source="{Binding ImagePath}" Width="100" Height="75"></Image>
-								<StackPanel Grid.Column="1" Margin="5">
+								<StackPanel HorizontalAlignment="Stretch" Grid.Column="1" Margin="5">
 									<TextBlock Style="{StaticResource BodyTextBlockStyle}" FontWeight="Bold" Text="{Binding Title}" TextTrimming="CharacterEllipsis" MaxLines="2"></TextBlock>
 									<TextBlock Style="{StaticResource BodyTextBlockStyle}" Text="{Binding UploadDateTime}"></TextBlock>
 								</StackPanel>
@@ -68,7 +68,7 @@
 				</ListView>
 			</StackPanel>
 			<StackPanel Background="AliceBlue" Name="TagPackListPanel" Grid.Column="1" Grid.Row="1">
-				<Grid>
+				<Grid HorizontalAlignment="Stretch">
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="*"></ColumnDefinition>
 						<ColumnDefinition Width="Auto"></ColumnDefinition>
@@ -105,20 +105,24 @@
 						<DataTemplate>
 							<Grid Margin="10">
 								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="100"/>
 									<ColumnDefinition Width="*"/>
+									<ColumnDefinition Width="50"/>
 								</Grid.ColumnDefinitions>
-								<Grid.RowDefinitions>
-									<RowDefinition Height="75"></RowDefinition>
-								</Grid.RowDefinitions>
-								<Image Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Source="{Binding ImagePath}" Width="100" Height="75"></Image>
-								<StackPanel Grid.Column="1" Margin="5">
-									<TextBlock Style="{StaticResource BodyTextBlockStyle}" FontWeight="Bold" Text="{Binding Title}" TextTrimming="CharacterEllipsis" MaxLines="2"></TextBlock>
-									<TextBlock Style="{StaticResource BodyTextBlockStyle}" Text="{Binding UploadDateTime}"></TextBlock>
+								<StackPanel Grid.Column="0" Grid.Row="0" Margin="5">
+									<TextBlock Style="{StaticResource BodyTextBlockStyle}" FontWeight="Bold" Text="{Binding Title}" TextTrimming="CharacterEllipsis" MaxLines="1"></TextBlock>
+									<TextBlock Style="{StaticResource BodyTextBlockStyle}" Text="{Binding Tags}" TextTrimming="CharacterEllipsis" MaxLines="1" HorizontalAlignment="Stretch"></TextBlock>
+								</StackPanel>
+								<StackPanel Grid.Column="1" HorizontalAlignment="Right">
+									<TextBlock>Test</TextBlock>
 								</StackPanel>
 							</Grid>
 						</DataTemplate>
 					</ListView.ItemTemplate>
+					<ListView.ItemContainerStyle>
+						<Style TargetType="ListViewItem">
+							<Setter Property="HorizontalContentAlignment" Value="Stretch" />
+						</Style>
+					</ListView.ItemContainerStyle>
 				</ListView>
 			</StackPanel>
 		</Grid>

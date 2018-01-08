@@ -97,6 +97,7 @@
     </Compile>
     <Compile Include="Infrastructure\AuthService.cs" />
     <Compile Include="Infrastructure\Converters\BooleanToVisibilityConverter.cs" />
+    <Compile Include="Infrastructure\Exceptions\InvalidViewModelException.cs" />
     <Compile Include="Infrastructure\UtilityService.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
